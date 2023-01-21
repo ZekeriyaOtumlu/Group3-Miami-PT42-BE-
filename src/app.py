@@ -11,7 +11,7 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
-from flask_jwt_extended import JWTManager
+
 
 
 #from models import Person
@@ -34,7 +34,7 @@ db.init_app(app)
 
 # PASTED FROM JWT WEBSITE
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
-jwt = JWTManager(app)
+# jwt = JWTManager(app)
 
 # Allow CORS requests to this API
 CORS(app)
@@ -69,7 +69,19 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0 # avoid cache memory
     return response
 
+# Spponacular APIs
+@app.route('/recipes', methods=['GET'])
+def get_all_recipes():
+    response_API = requests.get('https://api.spoonacular.com/recipes')
+    print(response_API.text)
 
+    # response_body = {
+    #     "msg": "Hello, this is your GET /user response "
+    # }
+
+    return response_API.json()["results"], 200
+    response_API.status_code != 200
+    return "", 404
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
